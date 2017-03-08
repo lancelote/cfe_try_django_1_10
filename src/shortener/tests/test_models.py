@@ -42,3 +42,24 @@ class KirrURLTest(TestCase):
         old_shortcode = kirr_url.shortcode
         kirr_url.save()
         self.assertEqual(kirr_url.shortcode, old_shortcode)
+
+    def test_generate_shortcode_returns_expected_result(self):
+        with mock.patch('shortener.models.generate_code') as mock_gen_code:
+            mock_gen_code.return_value = 'hello'
+            self.assertEqual(KirrURL.generate_shortcode(), 'hello')
+
+    def test_generate_shortcode_works_fine_for_2_collisions(self):
+        KirrURL.objects.create(shortcode='hello')
+        KirrURL.objects.create(shortcode='world')
+        with mock.patch('shortener.models.generate_code') as mock_gen_code:
+            mock_gen_code.side_effect = ['hello', 'world', 'awesome']
+            self.assertEqual(KirrURL.generate_shortcode(), 'awesome')
+
+    def test_generate_shortcode_raise_exception_after_3_collisions(self):
+        shortcodes = ['hello', 'world', 'awesome']
+        for shortcode in shortcodes:
+            KirrURL.objects.create(shortcode=shortcode)
+        with mock.patch('shortener.models.generate_code') as mock_gen_code:
+            mock_gen_code.side_effect = shortcodes
+            with self.assertRaises(ValueError):
+                KirrURL.generate_shortcode()
