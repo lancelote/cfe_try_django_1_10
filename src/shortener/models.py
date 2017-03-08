@@ -6,12 +6,13 @@ from shortener.utils import code_generator
 class KirrURL(models.Model):
 
     url       = models.CharField(max_length=220)
-    shortcode = models.CharField(max_length=15, unique=True)
+    shortcode = models.CharField(max_length=15, unique=True, blank=True)
     updated   = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        self.shortcode = code_generator()
+        if not self.shortcode:
+            self.shortcode = code_generator()
         super().save(*args, **kwargs)
 
     def __str__(self):

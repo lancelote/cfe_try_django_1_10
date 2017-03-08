@@ -32,3 +32,13 @@ class KirrURLTest(TestCase):
 
             self.assertEqual(kirr_url.updated, update_time)
             self.assertEqual(kirr_url.timestamp, create_time)
+
+    def test_shortcode_is_auto_generated(self):
+        kirr_url = KirrURL.objects.create(url='https://hello_world.com/')
+        self.assertTrue(kirr_url.shortcode)
+
+    def test_shortcode_is_not_overwritten_on_each_save(self):
+        kirr_url = KirrURL.objects.create(url='https://hello_world.com/')
+        old_shortcode = kirr_url.shortcode
+        kirr_url.save()
+        self.assertEqual(kirr_url.shortcode, old_shortcode)
