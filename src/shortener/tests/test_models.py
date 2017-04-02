@@ -63,3 +63,23 @@ class KirrURLTest(TestCase):
             mock_gen_code.side_effect = shortcodes
             with self.assertRaises(ValueError):
                 KirrURL.generate_shortcode()
+
+
+class KirrURLManagerTest(TestCase):
+
+    def test_refresh_works(self):
+        KirrURL.objects.create(url='https://hello-world.com/')
+        KirrURL.objects.create()
+
+        url1, url2 = KirrURL.objects.all()
+        old_shortcode1 = url1.shortcode
+        old_shortcode2 = url2.shortcode
+
+        KirrURL.objects.refresh_shortcodes()
+
+        url1, url2 = KirrURL.objects.all()
+        new_shortcode1 = url1.shortcode
+        new_shortcode2 = url2.shortcode
+
+        self.assertNotEqual(old_shortcode1, new_shortcode1)
+        self.assertNotEqual(old_shortcode2, new_shortcode2)
