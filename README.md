@@ -5,6 +5,10 @@
 
 Code for [Try Django 1.10][1] tutorial by [CodingEntrepreneurs][2]
 
+## Notes
+
+I experiment a lot with the code from [CFE][2] so please be aware in case you want to use this project for references. Meanwhile I hope one can find some useful tips in my changes (for example [tests](src/shortener/tests)) so please feel free to compare my code to yours and provide any suggestions or start a chat.
+
 ## Requirements
 
  - Python 3.x
