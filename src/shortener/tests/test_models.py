@@ -2,6 +2,7 @@ from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
+
 from shortener.models import KirrURL
 
 
@@ -66,11 +67,11 @@ class KirrURLTest(TestCase):
 
 
 class KirrURLManagerTest(TestCase):
-
-    def test_refresh_works(self):
+    def setUp(self):
         KirrURL.objects.create(url='https://hello-world.com/')
         KirrURL.objects.create()
 
+    def test_refresh_works(self):
         url1, url2 = KirrURL.objects.all()
         old_shortcode1 = url1.shortcode
         old_shortcode2 = url2.shortcode
@@ -83,3 +84,14 @@ class KirrURLManagerTest(TestCase):
 
         self.assertNotEqual(old_shortcode1, new_shortcode1)
         self.assertNotEqual(old_shortcode2, new_shortcode2)
+
+    def test_refresh_returns_correct_results(self):
+        result = KirrURL.objects.refresh_shortcodes()
+        self.assertEqual(result, 'Shortcodes: 2 updated, 0 failed')
+
+    def test_correct_result_for_failed_code_generation(self):
+        generate_shortcode = 'shortener.models.KirrURL.generate_shortcode'
+        with mock.patch(generate_shortcode) as mock_gen_shortcode:
+            mock_gen_shortcode.side_effect = ValueError
+            result = KirrURL.objects.refresh_shortcodes()
+        self.assertEqual(result, 'Shortcodes: 0 updated, 2 failed')

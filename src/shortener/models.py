@@ -20,7 +20,9 @@ class KirrURLManager(models.Manager):
             else:
                 kirr_url.save()
                 new += 1
-        logger.info('Shortcodes refresh: {} updated, {} failed'.format(new, failed))
+        results = 'Shortcodes: {} updated, {} failed'.format(new, failed)
+        logger.info(results)
+        return results
 
 
 class KirrURL(models.Model):
