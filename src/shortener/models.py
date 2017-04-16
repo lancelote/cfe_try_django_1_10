@@ -9,12 +9,12 @@ logger = logging.getLogger(__name__)
 
 class KirrURLManager(models.Manager):
     def refresh_shortcodes(self):
-        """Refresh shortcudes for all urls."""
-        kirr_urls = KirrURL.objects.all()
+        """Refresh shortcodes for all urls."""
+        kirr_urls = self.model.objects.all()
         new, failed = 0, 0
         for kirr_url in kirr_urls:
             try:
-                kirr_url.shortcode = KirrURL.generate_shortcode()
+                kirr_url.shortcode = self.model.generate_shortcode()
             except ValueError:
                 failed += 1
             else:
