@@ -5,7 +5,6 @@ from shortener.utils import generate_code
 
 
 class CodeGeneratorTest(unittest.TestCase):
-
     def test_return_random_string(self):
         with mock.patch('random.SystemRandom.choice') as mock_choice:
             mock_choice.return_value = 'a'
